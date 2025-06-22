@@ -2,6 +2,7 @@
 const MODEL_KEY  = "snapspot_user";
 const COUNT_KEY  = "snapspot_counts";          // NEW: vote store
 let  user   = JSON.parse(localStorage.getItem(MODEL_KEY))  || null;
+if (user && !user.starredIDs) user.starredIDs = []; // ensure starredIDs exists
 let  counts = JSON.parse(localStorage.getItem(COUNT_KEY))  || {}; // { id:{like:3,dislike:1} }
 
 
@@ -88,8 +89,6 @@ function render(filter = null) {
   // sort by tag preference first, then by like-count
   let spots = [...SPOTS].sort((a, b) => score(b) - score(a) || votes(b) - votes(a));
 
-  if (filter) spots = spots.filter(s => s.tags.includes(filter));
-
   if (filter === "starred") {
     spots = spots.filter(s => user.starredIDs.includes(s.id));
   } else if (filter) {
@@ -133,13 +132,26 @@ function buildCard(spot) {
       <button data-fav>⭐</button>
     </div>`;
 
-  // highlight if already liked
-  if (user.likedIDs.includes(spot.id)) card.style.borderColor = "#0a0";
+    const likeBtn = card.querySelector("[data-like]");
+    const dislikeBtn = card.querySelector("[data-dislike]");
+    const starBtn = card.querySelector("[data-fav]");
 
-  // event handlers
-  card.querySelector("[data-like]").onclick =
-  card.querySelector("[data-fav]").onclick = () => toggleStar(spot, card);
-  card.querySelector("[data-dislike]").onclick = () => rate(spot, "dislike", card);
+    // Like button handler
+    likeBtn.onclick = () => rate(spot, "like", card);
+
+    // Dislike button handler
+    dislikeBtn.onclick = () => rate(spot, "dislike", card);
+
+    // Star button handler
+    starBtn.onclick = () => toggleStar(spot, card);
+
+    // Set star button text based on whether the spot is starred
+    starBtn.textContent = user.starredIDs.includes(spot.id) ? "⭐" : "☆";
+
+  // Highlight card border if liked
+  if (user.likedIDs.includes(spot.id)) card.style.borderColor = "#0a0";
+  else card.style.borderColor = "";  // Reset if not liked
+
 
   return card;
 }
@@ -174,17 +186,21 @@ function rate(spot, type, card) {
 }
 
 function toggleStar(spot, card) {
+  const starBtn = card.querySelector("[data-fav]");
   const idx = user.starredIDs.indexOf(spot.id);
   if (idx === -1) {
     user.starredIDs.push(spot.id);
+    starBtn.textContent = "⭐";
     toastMsg("Starred!");
   } else {
     user.starredIDs.splice(idx, 1);
+    starBtn.textContent = "☆";
     toastMsg("Unstarred!");
   }
   localStorage.setItem(MODEL_KEY, JSON.stringify(user));
   render(currentFilter);
 }
+
 
 /* ========== Toast helper ========== */
 function toastMsg(msg) {
