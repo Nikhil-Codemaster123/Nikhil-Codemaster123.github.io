@@ -1,4 +1,5 @@
-/* ── PERSONALISED-ONLY VERSION ─────────────────────── */
+//personalised version
+// This version uses user preferences to filter and sort spots based on tags they like or dislike.
 const MODEL_KEY="snapspot_user";
 let user = JSON.parse(localStorage.getItem(MODEL_KEY)) || null;
 let currentFilter=null;
@@ -10,10 +11,12 @@ const modal  = document.getElementById("onboard");
 const choiceWrap=document.getElementById("tagChoices");
 const saveBtn= document.getElementById("savePrefs");
 
-/* gather tags */
+/* data for the spots */
+// This is a simple array of objects, each representing a spot with an id, name,
 const TAGS=[...new Set(SPOTS.flatMap(s=>s.tags))].sort();
 
-/* onboarding if first run */
+/* check if user has preferences */
+// If not, show modal to select favourite tags
 if(!user){buildModal();modal.classList.add("show");}
 else{initUI();}
 
@@ -34,7 +37,8 @@ function buildModal(){
   };
 }
 
-/* build nav bar */
+/* build the navigation bar */
+// This creates buttons for each tag and a home button that shows all spots
 function buildNav(){
   nav.innerHTML="";
   const home=add("All",null);
@@ -49,7 +53,8 @@ function buildNav(){
   }
 }
 
-/* render personalised list */
+/* shuffle an array */
+// This is a simple implementation of the Fisher-Yates shuffle algorithm
 function render(filter=null){
   let spots=[...SPOTS].sort((a,b)=>score(b)-score(a));
   if(filter) spots=spots.filter(s=>s.tags.includes(filter));
@@ -58,7 +63,8 @@ function render(filter=null){
 
 function score(s){ return s.tags.reduce((sum,t)=>sum+(user.likedTags[t]||0),0); }
 
-/* card with memory */
+/* create a card element */
+// Each card has an image, name, tags, and buttons for interaction
 function card(spot){
   const c=document.createElement("div"); c.className="card";
   c.innerHTML=`
@@ -77,7 +83,8 @@ function card(spot){
   return c;
 }
 
-/* rate function */
+/* rate a spot */
+// This function updates the user's preferences based on their interaction with a spot
 function rate(spot,tp){
   if(tp==="like"){
     if(!user.likedIDs.includes(spot.id))user.likedIDs.push(spot.id);
@@ -91,7 +98,8 @@ function rate(spot,tp){
   render(currentFilter);
 }
 
-/* helpers */
+/* show a toast message */
+// This function displays a temporary message to the user
 function msg(m){toast.textContent=m;toast.classList.add("show");
                 setTimeout(()=>toast.classList.remove("show"),1500);}
 function initUI(){buildNav();render();}
