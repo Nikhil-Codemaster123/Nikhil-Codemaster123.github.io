@@ -5,7 +5,7 @@ Hosted with [GitHub Pages](https://nikhil-codemaster123.github.io/).
 
 ## ✨ Versions
 
-🔹 [Personalized version](https://nikhil-codemaster123.github.io/SnapSpot/Personalized/index.html)  
+🔹 [Personalized version](https://nikhil-codemaster123.github.io/SnapSpot/Personalised/index.html)  
 Tailors the content based on your favorite tags.
 
 🔹 [Randomized version](https://nikhil-codemaster123.github.io/SnapSpot/Random/index.html)  
