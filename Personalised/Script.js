@@ -111,9 +111,8 @@ function votes(s) {
 
 /* ========== Build one card ========== */
 function buildCard(spot) {
-  // ensure spot.id entry exists
+  // ensure spot.id entry exists in counts
   if (!counts[spot.id]) counts[spot.id] = { like: 0, dislike: 0 };
-
   const { like, dislike } = counts[spot.id];
 
   const card = document.createElement("div");
@@ -129,32 +128,46 @@ function buildCard(spot) {
     <div class="actions">
       <button data-like>👍</button>
       <button data-dislike>👎</button>
-      <button data-fav>⭐</button>
+      <button data-fav>${user.starredIDs.includes(spot.id) ? "⭐" : "☆"}</button>
     </div>`;
 
-    const likeBtn = card.querySelector("[data-like]");
-    const dislikeBtn = card.querySelector("[data-dislike]");
-    const starBtn = card.querySelector("[data-fav]");
+  /* grab buttons */
+  const likeBtn   = card.querySelector("[data-like]");
+  const dislikeBtn= card.querySelector("[data-dislike]");
+  const starBtn   = card.querySelector("[data-fav]");
 
-    // Like button handler
-    likeBtn.onclick = () => rate(spot, "like", card);
+  /* hook events */
+  likeBtn.onclick    = () => rate(spot, "like", card);
+  dislikeBtn.onclick = () => rate(spot, "dislike", card);
+  starBtn.onclick    = () => toggleStar(spot, starBtn);
 
-    // Dislike button handler
-    dislikeBtn.onclick = () => rate(spot, "dislike", card);
-
-    // Star button handler
-    starBtn.onclick = () => toggleStar(spot, card);
-
-    // Set star button text based on whether the spot is starred
-    starBtn.textContent = user.starredIDs.includes(spot.id) ? "⭐" : "☆";
-
-  // Highlight card border if liked
-  if (user.likedIDs.includes(spot.id)) card.style.borderColor = "#0a0";
-  else card.style.borderColor = "";  // Reset if not liked
-
+  /* border highlight only if liked */
+  card.style.borderColor = user.likedIDs.includes(spot.id) ? "#0a0" : "";
 
   return card;
 }
+
+/* ========== Star / un-star ========== */
+function toggleStar(spot, starBtn) {
+  const idx = user.starredIDs.indexOf(spot.id);
+
+  if (idx === -1) {
+    user.starredIDs.push(spot.id);
+    starBtn.textContent = "⭐";
+    toastMsg("Starred!");
+  } else {
+    user.starredIDs.splice(idx, 1);
+    starBtn.textContent = "☆";
+    toastMsg("Unstarred!");
+  }
+
+  localStorage.setItem(MODEL_KEY, JSON.stringify(user));
+
+  // If we're on the ⭐ tab, refresh list so removed items disappear immediately
+  if (currentFilter === "starred") render("starred");
+  else buildNav();   // keep nav order fresh
+}
+
 
 /* ========== Rating logic ========== */
 function rate(spot, type, card) {
@@ -182,22 +195,6 @@ function rate(spot, type, card) {
 
   // re-render list immediately for new order
   buildNav(); //update navbar
-  render(currentFilter);
-}
-
-function toggleStar(spot, card) {
-  const starBtn = card.querySelector("[data-fav]");
-  const idx = user.starredIDs.indexOf(spot.id);
-  if (idx === -1) {
-    user.starredIDs.push(spot.id);
-    starBtn.textContent = "⭐";
-    toastMsg("Starred!");
-  } else {
-    user.starredIDs.splice(idx, 1);
-    starBtn.textContent = "☆";
-    toastMsg("Unstarred!");
-  }
-  localStorage.setItem(MODEL_KEY, JSON.stringify(user));
   render(currentFilter);
 }
 
