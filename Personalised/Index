@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SnapSpot – Personalised</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar"><h1>📸 SnapSpot – Personalised</h1></header>
+
+  <!-- first-run modal -->
+  <div id="onboard" class="modal">
+    <div class="modal-box">
+      <h2>Select your favourite tags</h2>
+      <div id="tagChoices" class="choice-wrap"></div>
+      <button id="savePrefs">Save preferences</button>
+    </div>
+  </div>
+
+  <nav id="tagNav" class="navbar"></nav>
+  <main id="spotList" class="grid"></main>
+  <div id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
