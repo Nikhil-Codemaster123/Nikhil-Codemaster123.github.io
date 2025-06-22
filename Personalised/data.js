@@ -10,7 +10,7 @@ const SPOTS = [
     id: 2,
     name: "Hilltop View",
     tags: ["nature", "sunrise"],
-    img: "images/hill top view.jpg"
+    img: "images/hill.jpg"
   },
   {
     id: 3,
