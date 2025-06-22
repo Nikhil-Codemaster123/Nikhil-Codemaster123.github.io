@@ -54,22 +54,30 @@ function initUI() {
 function buildNav() {
   nav.innerHTML = "";
 
+  // Sort tags by user's preference count (most liked tags first)
+  const sortedTags = [...TAGS].sort((a, b) =>
+    (user.likedTags[b] || 0) - (user.likedTags[a] || 0)
+  );
+
   const makeBtn = (label, tag = null) => {
     const b = document.createElement("button");
     b.className = "nav-btn";
     b.textContent = label;
     b.onclick = () => {
-      document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(x => x.classList.remove("active"));
       b.classList.add("active");
       currentFilter = tag;
       render(tag);
     };
-    nav.appendChild(b); return b;
+    nav.appendChild(b);
+    return b;
   };
 
   const homeBtn = makeBtn("All"); homeBtn.classList.add("active");
-  TAGS.forEach(t => makeBtn(t, t));
+
+  sortedTags.forEach(t => makeBtn(t, t));
 }
+
 
 /* ========== Render card list ========== */
 function render(filter = null) {
