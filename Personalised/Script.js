@@ -159,6 +159,7 @@ function rate(spot, type, card) {
   card.querySelector("[data-dislikes]").textContent = c.dislike;
 
   // re-render list immediately for new order
+  buildNav(); //update navbar
   render(currentFilter);
 }
 
