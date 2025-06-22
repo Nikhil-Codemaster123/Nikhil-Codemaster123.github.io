@@ -5,10 +5,10 @@ Hosted with [GitHub Pages](https://pages.github.com).
 
 ## ✨ Versions
 
-🔹 [Personalized version](https://yourusername.github.io/SnapSpot/personalized/)  
+🔹 [Personalized version](https://Nikhil-Codemaster123.github.io/SnapSpot/Personalized/)  
 Tailors the content based on your favorite tags.
 
-🔹 [Randomized version](https://yourusername.github.io/SnapSpot/randomized/)  
+🔹 [Randomized version](https://Nikhil-Codemaster123.github.io/SnapSpot/Random/)  
 Shows locations in random order with no personalization.
 
 ## 🧠 Features
