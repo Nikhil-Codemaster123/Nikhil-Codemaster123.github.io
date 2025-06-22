@@ -1,7 +1,7 @@
 # SnapSpot 🌍📸
 
 A simple, personalized photography spot discovery app.  
-Hosted with [GitHub Pages](https://nikhil-codemaster123.github.io/).
+Click here to experience [Snapshot- Your Photography Scouting Buddy](https://nikhil-codemaster123.github.io/).
 
 ## ✨ Versions
 
