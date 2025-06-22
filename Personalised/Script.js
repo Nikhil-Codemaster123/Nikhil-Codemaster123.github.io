@@ -36,7 +36,7 @@ function buildOnboard() {
 
   saveBtn.onclick = () => {
     const fav = [...document.querySelectorAll(".choice.selected")].map(x => x.textContent);
-    user = { likedTags:{}, likedIDs:[], dislikedIDs:[] };
+    user = { likedTags:{}, likedIDs:[], dislikedIDs:[], starredIDs:[] };
     fav.forEach(t => user.likedTags[t] = 5);
     localStorage.setItem(MODEL_KEY, JSON.stringify(user));
     modal.classList.remove("show");
@@ -54,29 +54,33 @@ function initUI() {
 function buildNav() {
   nav.innerHTML = "";
 
-  // Sort tags by user's preference count (most liked tags first)
-  const sortedTags = [...TAGS].sort((a, b) =>
-    (user.likedTags[b] || 0) - (user.likedTags[a] || 0)
-  );
-
+  // 1️⃣ Build helper
   const makeBtn = (label, tag = null) => {
-    const b = document.createElement("button");
-    b.className = "nav-btn";
-    b.textContent = label;
-    b.onclick = () => {
-      document.querySelectorAll(".nav-btn").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
+    const btn = document.createElement("button");
+    btn.className = "nav-btn";
+    btn.textContent = label;
+    btn.onclick = () => {
+      document.querySelectorAll(".nav-btn")
+        .forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
       currentFilter = tag;
       render(tag);
     };
-    nav.appendChild(b);
-    return b;
+    nav.appendChild(btn);
+    return btn;
   };
 
-  const homeBtn = makeBtn("All"); homeBtn.classList.add("active");
+  // 2️⃣ “All” (first) + “⭐ Starred” (second)
+  makeBtn("All").classList.add("active");
+  makeBtn("⭐ Starred", "starred");
 
+  // 3️⃣ Sorted tag buttons (user’s most-liked first)
+  const sortedTags = [...TAGS].sort(
+    (a, b) => (user.likedTags[b] || 0) - (user.likedTags[a] || 0)
+  );
   sortedTags.forEach(t => makeBtn(t, t));
 }
+
 
 
 /* ========== Render card list ========== */
@@ -85,6 +89,12 @@ function render(filter = null) {
   let spots = [...SPOTS].sort((a, b) => score(b) - score(a) || votes(b) - votes(a));
 
   if (filter) spots = spots.filter(s => s.tags.includes(filter));
+
+  if (filter === "starred") {
+    spots = spots.filter(s => user.starredIDs.includes(s.id));
+  } else if (filter) {
+    spots = spots.filter(s => s.tags.includes(filter));
+  }
 
   list.innerHTML = "";
   spots.forEach(s => list.appendChild(buildCard(s)));
@@ -128,7 +138,7 @@ function buildCard(spot) {
 
   // event handlers
   card.querySelector("[data-like]").onclick =
-  card.querySelector("[data-fav]").onclick = () => rate(spot, "like", card);
+  card.querySelector("[data-fav]").onclick = () => toggleStar(spot, card);
   card.querySelector("[data-dislike]").onclick = () => rate(spot, "dislike", card);
 
   return card;
@@ -160,6 +170,19 @@ function rate(spot, type, card) {
 
   // re-render list immediately for new order
   buildNav(); //update navbar
+  render(currentFilter);
+}
+
+function toggleStar(spot, card) {
+  const idx = user.starredIDs.indexOf(spot.id);
+  if (idx === -1) {
+    user.starredIDs.push(spot.id);
+    toastMsg("Starred!");
+  } else {
+    user.starredIDs.splice(idx, 1);
+    toastMsg("Unstarred!");
+  }
+  localStorage.setItem(MODEL_KEY, JSON.stringify(user));
   render(currentFilter);
 }
 
