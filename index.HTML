@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SnapSpot – dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ── Top bar ─────────────────────────────────────── -->
+  <header class="topbar">
+    <h1>📸 SnapSpot</h1>
+
+    <label class="toggle">
+      <input type="checkbox" id="personalToggle" />
+      Personalized
+    </label>
+  </header>
+
+  <!-- ── Tag navigation bar (built by JS) ────────────── -->
+  <nav id="tagNav" class="navbar"></nav>
+
+  <!-- ── Card area ───────────────────────────────────── -->
+  <main id="spotList" class="grid"></main>
+
+  <!-- ── On-boarding modal for first run ─────────────── -->
+  <div id="onboard" class="modal">
+    <div class="modal-box">
+      <h2>Select your favourite tags</h2>
+      <div id="tagChoices" class="choice-wrap"></div>
+      <button id="savePrefs">Save preferences</button>
+    </div>
+  </div>
+
+  <!-- ── Toast (feedback pop-up) ──────────────────────── -->
+  <div id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
