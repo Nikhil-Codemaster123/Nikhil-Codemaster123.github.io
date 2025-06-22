@@ -3,11 +3,7 @@ const MODEL_KEY  = "snapspot_user";
 const COUNT_KEY  = "snapspot_counts";          // NEW: vote store
 let  user   = JSON.parse(localStorage.getItem(MODEL_KEY))  || null;
 let  counts = JSON.parse(localStorage.getItem(COUNT_KEY))  || {}; // { id:{like:3,dislike:1} }
-// TEMP: Reset all likes/dislikes once
-localStorage.removeItem(COUNT_KEY);
-localStorage.removeItem("snapspot_user");
-localStorage.removeItem("snapspot_counts");
-location.reload();
+
 
 let  currentFilter = null;
 
